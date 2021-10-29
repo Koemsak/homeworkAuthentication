@@ -18,13 +18,13 @@ class UserController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = $request->password;
-
-        $user->save();
+        $user->password = bcrypt($request->password);
 
         $token = $user->createToken('MyToken')->plainTextToken;
 
-        return respone()->json([
+        $user->save();
+
+        return response()->json([
             'Message' => 'Created',
             'data' => $user,
             'token' =>  $token
@@ -33,7 +33,7 @@ class UserController extends Controller
 
     public function signout(Request $request) 
     {
-        auth()->user()->tokens()-delete();
+        auth()->user()->tokens()->delete();
 
         return response()->json(['Message' => 'Signing out']);
     }
